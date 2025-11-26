@@ -1,896 +1,102 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سبورت شوب - المتجر</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { 
-            direction: 'rtl',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1e40af',
-                        secondary: '#059669',
-                        accent: '#dc2626'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
-        body { 
-            font-family: 'Tajawal', sans-serif; 
-            background-color: #f9fafb; 
-        }
-        .badge {
-            position: absolute;
-            top: -8px;
-            left: -8px;
-            background-color: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 10;
-        }
-        .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 16px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        }
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-        }
-        .product-image {
-            height: 180px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        .product-card:hover .product-image {
-            transform: scale(1.03);
-        }
-        .notification {
-            animation: slideIn 0.3s ease forwards;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        .cart-item {
-            transition: all 0.3s ease;
-        }
-        .cart-item:hover {
-            transform: scale(1.01);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .quantity-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f1f5f9;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .quantity-btn:hover {
-            background-color: #e2e8f0;
-            transform: scale(1.05);
-        }
-        .quantity-input {
-            width: 40px;
-            height: 32px;
-            text-align: center;
-            border: none;
-            background: #f8fafc;
-            font-weight: bold;
-            border-radius: 4px;
-        }
-        .mobile-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 50;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-        }
-        .mobile-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 12px;
-            color: #64748b;
-            text-decoration: none;
-            padding: 4px 0;
-            position: relative;
-        }
-        .mobile-nav .nav-item.active {
-            color: #1e40af;
-        }
-        .mobile-nav .nav-item i {
-            font-size: 20px;
-            margin-bottom: 2px;
-        }
-        .mobile-nav .nav-item .badge {
-            top: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-        }
-        @media (min-width: 768px) {
-            .mobile-nav {
-                display: none;
-            }
-            .desktop-nav {
-                display: flex !important;
-            }
-        }
-        .back-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
-            color: #1e40af;
-            margin-left: 12px;
-            transition: all 0.2s ease;
-        }
-        .back-button:hover {
-            background-color: #e2e8f0;
-            transform: scale(1.05);
-        }
-        .category-badge {
-            background: linear-gradient(135deg, #1e40af, #059669);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .category-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
-        }
-        .category-badge.active {
-            transform: scale(1.1);
-            box-shadow: 0 6px 12px rgba(30, 64, 175, 0.4);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 800px;
-            position: relative;
-            animation: modalSlideIn 0.3s ease forwards;
-        }
-        @keyframes modalSlideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .close {
-            color: #aaa;
-            float: left;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            left: 15px;
-            top: 15px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #f1f5f9;
-        }
-        .close:hover {
-            color: #000;
-            background: #e2e8f0;
-        }
-        .product-detail-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        .product-gallery {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-        .gallery-item {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .gallery-item:hover, .gallery-item.active {
-            border-color: #1e40af;
-            transform: scale(1.05);
-        }
-        .rating {
-            color: #fbbf24;
-            margin: 10px 0;
-        }
-        .feature-list {
-            list-style: none;
-            padding: 0;
-        }
-        .feature-list li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            color: #4b5563;
-        }
-        .feature-list li i {
-            margin-left: 8px;
-            color: #1e40af;
-        }
-        /* ✅ تنسيق موحد للعناصر في شريط التنقل */
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 12px;
-            color: #64748b;
-            text-decoration: none;
-            padding: 4px 0;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .nav-item.active,
-        .nav-item:hover {
-            color: #1e40af;
-        }
-        /* ✅ موضع العداد في الديسكتوب */
-        #cart-count {
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الموقع قيد الصيانة</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ffcc00;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .help-links {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .help-links a {
+      color: #1e90ff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      padding: 10px;
+      border: 1px solid #1e90ff;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .help-links a:hover {
+      background-color: #1e90ff;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
-    <!-- شريط التنقل العلوي -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center">
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 w-10 h-10 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold">S</span>
-                </div>
-                <span class="mr-3 text-xl font-bold text-gray-800">سبورت شوب</span>
-            </div>
-            <div class="desktop-nav hidden items-center gap-6">
-                <a href="#" class="nav-item active" onclick="showProductsView(); return false;">
-                    <i class="fas fa-home text-xl"></i>
-                    <span>الرئيسية</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showCategoriesView(); return false;">
-                    <i class="fas fa-th-large text-xl"></i>
-                    <span>الأقسام</span>
-                </a>
-                <button onclick="openCart()" class="nav-item relative p-0 bg-transparent border-0 cursor-pointer">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span>السلة</span>
-                    <span id="cart-count" class="badge">0</span>
-                </button>
-            </div>
-            <div class="relative md:hidden">
-                <button onclick="openCart()" class="p-2 text-gray-700 relative">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span id="mobile-cart-count" class="badge">0</span>
-                </button>
-            </div>
-        </div>
-    </nav>
-    <!-- المنتجات -->
-    <div id="products-view" class="max-w-7xl mx-auto px-4 py-6 pb-24 md:pb-8">
-        <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-800">استكشف منتجاتنا</h1>
-        <div id="categories-filter" class="mb-8 flex flex-wrap justify-center gap-3 hidden"></div>
-        <div id="loading" class="text-center py-12 text-gray-500 hidden">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-lg">جارٍ تحميل المنتجات...</p>
-        </div>
-        <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-        <div id="no-products" class="text-center py-16 text-gray-500 hidden">
-            <i class="fas fa-box-open text-4xl mb-4 text-gray-300"></i>
-            <p class="text-xl">لا توجد منتجات متاحة حاليًا</p>
-        </div>
-    </div>
-    <!-- عرض الأقسام -->
-    <div id="categories-view" class="hidden max-w-7xl mx-auto px-4 py-6 pb-24 md:pb-8">
-        <div class="flex items-center mb-6">
-            <div class="back-button" onclick="showProductsView(); return false;">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-800">الأقسام</h2>
-        </div>
-        <div id="categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-    </div>
-    <!-- سلة المشتريات -->
-    <div id="cart-view" class="hidden max-w-4xl mx-auto px-4 py-6 pb-24 md:pb-8">
-        <div class="flex items-center mb-6">
-            <div class="back-button" onclick="backToProducts()">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-800">سلة المشتريات</h2>
-        </div>
-        <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
-            <div id="cart-items" class="space-y-4 mb-6"></div>
-            <div id="empty-cart" class="text-center py-12 text-gray-500 hidden">
-                <i class="fas fa-shopping-cart text-4xl mb-4 text-gray-300"></i>
-                <p class="text-xl">سلة فارغة</p>
-                <button onclick="backToProducts()" class="mt-4 text-blue-600 hover:text-blue-800 font-medium">
-                    <i class="fas fa-arrow-right ml-2"></i>تصفح المنتجات
-                </button>
-            </div>
-            <div class="flex flex-col sm:flex-row justify-between items-center border-t pt-6">
-                <span class="text-lg md:text-xl font-bold text-gray-800 mb-4 sm:mb-0">المجموع: <span id="cart-total">0.00</span>د.ع</span>
-                <button onclick="checkout()" id="checkout-btn" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:opacity-90 disabled:opacity-50 transition w-full sm:w-auto">
-                    تأكيد الطلب
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- نموذج الدفع -->
-    <div id="checkout-view" class="hidden max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-8">
-        <div class="flex items-center mb-6">
-            <div class="back-button" onclick="backToCart()">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-800">تأكيد الطلب</h2>
-        </div>
-        <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-right text-gray-700 mb-2">الاسم الكامل</label>
-                    <input type="text" id="customerName" placeholder="أدخل اسمك الكامل" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-right text-gray-700 mb-2">البريد الإلكتروني</label>
-                    <input type="email" id="customerEmail" placeholder="أدخل بريدك الإلكتروني" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-right text-gray-700 mb-2">رقم الجوال</label>
-                    <input type="tel" id="customerPhone" placeholder="05XXXXXXXX" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-right text-gray-700 mb-2">العنوان الكامل</label>
-                    <textarea id="customerAddress" placeholder="المدينة، الحي، الشارع، رقم المبنى..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" rows="3"></textarea>
-                </div>
-            </div>
-            <div class="mt-8 flex flex-col sm:flex-row justify-between gap-4">
-                <button onclick="backToCart()" class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition w-full sm:w-auto">
-                    العودة للسلة
-                </button>
-                <button onclick="placeOrder()" id="place-order-btn" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:opacity-90 flex items-center justify-center w-full sm:w-auto">
-                    <span>إرسال الطلب</span>
-                    <i class="fas fa-paper-plane mr-2"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- نافذة تفاصيل المنتج -->
-    <div id="product-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeProductModal()">&times;</span>
-            <div id="product-detail-content"></div>
-        </div>
-    </div>
-    <!-- شريط التنقل السفلي للهواتف -->
-    <div class="mobile-nav">
-        <a href="#" class="nav-item active" onclick="showProductsView(); return false;">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </a>
-        <a href="#" class="nav-item" onclick="showCategoriesView(); return false;">
-            <i class="fas fa-th-large"></i>
-            <span>الأقسام</span>
-        </a>
-        <a href="#" class="nav-item relative" onclick="openCart(); return false;">
-            <i class="fas fa-shopping-cart"></i>
-            <span>السلة</span>
-            <span class="mobile-cart-count-badge badge">0</span>
-        </a>
-    </div>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script>
-        // 🔑 إعدادات Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoA2VrcSW9Rdpsl2qDKPDRrpr7RxLVZ64",
-            authDomain: "xxsfv-1222e.firebaseapp.com",
-            projectId: "xxsfv-1222e",
-            storageBucket: "xxsfv-1222e.firebasestorage.app",
-            messagingSenderId: "1082133530646",
-            appId: "1:1082133530646:web:fbe13cf3179720308e4d37",
-            measurementId: "G-FVB4CEGW66"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let currentView = 'products';
-        let allProducts = [];
-        let categories = new Set();
-        let currentProduct = null;
-        // === دوال السلة ===
-        function updateCartUI() {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            // تحديث العداد في الشريط العلوي
-            document.getElementById('cart-count').textContent = count;
-            document.getElementById('mobile-cart-count').textContent = count;
-            // تحديث العداد في الشريط السفلي
-            document.querySelectorAll('.mobile-cart-count-badge').forEach(el => {
-                el.textContent = count;
-            });
-            document.getElementById('cart-total').textContent = total.toFixed(2);
-            const itemsDiv = document.getElementById('cart-items');
-            const emptyDiv = document.getElementById('empty-cart');
-            const checkoutBtn = document.getElementById('checkout-btn');
-            if (cart.length === 0) {
-                emptyDiv.classList.remove('hidden');
-                itemsDiv.classList.add('hidden');
-                checkoutBtn.disabled = true;
-            } else {
-                emptyDiv.classList.add('hidden');
-                itemsDiv.classList.remove('hidden');
-                checkoutBtn.disabled = false;
-                itemsDiv.innerHTML = cart.map(item => `
-                    <div class="cart-item flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <img src="${item.image || 'https://placehold.co/60x60?text=  منتج'}" 
-                             class="w-16 h-16 object-cover rounded-lg" 
-                             onerror="this.src='https://placehold.co/60x60?text=  لا+صورة'">
-                        <div class="mr-3 flex-1">
-                            <h4 class="font-bold text-gray-800 text-sm md:text-base">${item.name}</h4>
-                            <p class="text-xs text-gray-600 mt-1">${item.price.toFixed(2)}د.ع</p>
-                            <div class="flex items-center mt-2">
-                                <button onclick="updateQuantity('${item.id}', -1)" class="quantity-btn">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" min="1" value="${item.quantity}" 
-                                       class="quantity-input mx-2" 
-                                       onchange="updateQuantity('${item.id}', this.value - ${item.quantity})">
-                                <button onclick="updateQuantity('${item.id}', 1)" class="quantity-btn">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <button onclick="removeFromCart('${item.id}')" class="text-red-600 hover:text-red-800 p-2">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-        }
-        function updateQuantity(id, change) {
-            const item = cart.find(item => item.id === id);
-            if (!item) return;
-            if (typeof change === 'number') {
-                item.quantity += change;
-                if (item.quantity < 1) item.quantity = 1;
-            } else {
-                const newQty = parseInt(change);
-                if (newQty >= 1) item.quantity = newQty;
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-        }
-        function addToCart(product) {
-            const existing = cart.find(item => item.id === product.id);
-            if (existing) {
-                existing.quantity++;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            const notif = document.createElement('div');
-            notif.className = 'fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 notification';
-            notif.innerHTML = '<i class="fas fa-check-circle mr-2"></i> تمت الإضافة إلى السلة';
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 2500);
-        }
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-        }
-        // === التنقل بين الواجهات ===
-        function openCart() {
-            if (currentView !== 'cart') {
-                currentView = 'cart';
-                document.getElementById('products-view').classList.add('hidden');
-                document.getElementById('categories-view').classList.add('hidden');
-                document.getElementById('cart-view').classList.remove('hidden');
-                document.getElementById('checkout-view').classList.add('hidden');
-                document.getElementById('product-modal').style.display = 'none';
-                updateNavActive('cart');
-                updateCartUI();
-            }
-        }
-        function showProductsView() {
-            if (currentView !== 'products') {
-                currentView = 'products';
-                document.getElementById('cart-view').classList.add('hidden');
-                document.getElementById('categories-view').classList.add('hidden');
-                document.getElementById('checkout-view').classList.add('hidden');
-                document.getElementById('products-view').classList.remove('hidden');
-                document.getElementById('product-modal').style.display = 'none';
-                updateNavActive('products');
-            }
-        }
-        function showCategoriesView() {
-            if (currentView !== 'categories') {
-                currentView = 'categories';
-                document.getElementById('products-view').classList.add('hidden');
-                document.getElementById('cart-view').classList.add('hidden');
-                document.getElementById('checkout-view').classList.add('hidden');
-                document.getElementById('categories-view').classList.remove('hidden');
-                renderCategories();
-                updateNavActive('categories');
-            }
-        }
-        function backToProducts() { showProductsView(); }
-        function backToCart() { openCart(); }
-        function checkout() {
-            if (cart.length === 0) return;
-            currentView = 'checkout';
-            document.getElementById('cart-view').classList.add('hidden');
-            document.getElementById('checkout-view').classList.remove('hidden');
-            updateNavActive('cart');
-            document.getElementById('customerName').value = '';
-            document.getElementById('customerEmail').value = '';
-            document.getElementById('customerPhone').value = '';
-            document.getElementById('customerAddress').value = '';
-        }
-        // === 🛡️ وظيفة إرسال الطلب مع الحماية الكاملة ===
-        async function placeOrder() {
-            const name = document.getElementById('customerName').value.trim();
-            const email = document.getElementById('customerEmail').value.trim();
-            const phone = document.getElementById('customerPhone').value.trim();
-            const address = document.getElementById('customerAddress').value.trim();
-            if (!name || !email || !phone || !address) {
-                alert('يرجى تعبئة جميع الحقول');
-                return;
-            }
-            // 🛡️ تنقية المدخلات
-            const clean = (str) => str.replace(/[<>'"&]/g, '');
-            const customerName = clean(name);
-            const customerEmail = email;
-            const customerPhone = clean(phone);
-            const customerAddress = clean(address);
-            const btn = document.getElementById('place-order-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span>جاري التحقق...</span> <i class="fas fa-spinner fa-spin mr-2"></i>';
-            try {
-                // 🛡️ خطوة الحماية: إعادة جلب كل منتج من Firestore
-                const verifiedItems = [];
-                let total = 0;
-                for (const item of cart) {
-                    const productDoc = await db.collection('products').doc(item.id).get();
-                    if (!productDoc.exists) {
-                        throw new Error(`المنتج غير موجود: ${item.name}`);
-                    }
-                    const dbProduct = productDoc.data();
-                    if (!dbProduct.inStock) {
-                        throw new Error(`المنتج غير متوفر: ${item.name}`);
-                    }
-                    const verifiedPrice = dbProduct.price;
-                    const itemTotal = verifiedPrice * item.quantity;
-                    total += itemTotal;
-                    verifiedItems.push({
-                        id: item.id,
-                        name: dbProduct.name || 'منتج',
-                        price: verifiedPrice,
-                        quantity: item.quantity,
-                        image: dbProduct.image || null
-                    });
-                }
-                const order = {
-                    customerName,
-                    email: customerEmail,
-                    phone: customerPhone,
-                    address: customerAddress,
-                    items: verifiedItems,
-                    total: total,
-                    status: 'processing',
-                    date: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                await db.collection('orders').add(order);
-                alert('✓ تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
-                cart = [];
-                localStorage.setItem('cart', JSON.stringify(cart));
-                showProductsView();
-            } catch (error) {
-                console.error('خطأ في إرسال الطلب:', error);
-                alert('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة لاحقاً.\n' + error.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span>إرسال الطلب</span> <i class="fas fa-paper-plane mr-2"></i>';
-            }
-        }
-        function updateNavActive(activeView) {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            if (activeView === 'products') {
-                document.querySelectorAll('.desktop-nav .nav-item')[0].classList.add('active');
-                if (window.innerWidth < 768) document.querySelectorAll('.mobile-nav .nav-item')[0].classList.add('active');
-            } else if (activeView === 'categories') {
-                document.querySelectorAll('.desktop-nav .nav-item')[1].classList.add('active');
-                if (window.innerWidth < 768) document.querySelectorAll('.mobile-nav .nav-item')[1].classList.add('active');
-            } else if (activeView === 'cart') {
-                if (window.innerWidth < 768) document.querySelectorAll('.mobile-nav .nav-item')[2].classList.add('active');
-            }
-        }
-        // === وظائف الأقسام والمنتجات ===
-        function renderCategories() {
-            const grid = document.getElementById('categories-grid');
-            grid.innerHTML = '';
-            const uniqueCategories = [...categories].filter(cat => cat && cat.trim() !== '');
-            if (uniqueCategories.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">لا توجد أقسام متاحة</div>';
-                return;
-            }
-            uniqueCategories.forEach(category => {
-                const categoryCard = document.createElement('div');
-                categoryCard.className = 'bg-white rounded-xl shadow-md p-6 text-center cursor-pointer hover:shadow-lg transition';
-                categoryCard.onclick = () => filterProductsByCategory(category);
-                categoryCard.innerHTML = `
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-tshirt text-2xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-800 text-lg">${category}</h3>
-                    <p class="text-gray-600 mt-2">${allProducts.filter(p => p.category === category).length} منتج</p>
-                `;
-                grid.appendChild(categoryCard);
-            });
-        }
-        function filterProductsByCategory(category) {
-            showProductsView();
-            const productsList = document.getElementById('products-list');
-            productsList.innerHTML = '';
-            const filteredProducts = allProducts.filter(p => p.category === category);
-            if (filteredProducts.length === 0) {
-                document.getElementById('no-products').classList.remove('hidden');
-                document.getElementById('no-products').innerHTML = `<i class="fas fa-box-open text-4xl mb-4 text-gray-300"></i>
-                    <p class="text-xl">لا توجد منتجات في قسم ${category}</p>`;
-                return;
-            }
-            document.getElementById('no-products').classList.add('hidden');
-            filteredProducts.forEach(product => {
-                renderProductCard(product);
-            });
-        }
-        function showAllProducts() {
-            const productsList = document.getElementById('products-list');
-            productsList.innerHTML = '';
-            allProducts.forEach(product => {
-                renderProductCard(product);
-            });
-            document.getElementById('no-products').classList.add('hidden');
-        }
-        function renderProductCard(product) {
-            const list = document.getElementById('products-list');
-            let imgSrc = 'https://placehold.co/300x300?text=  منتج';
-            if (product.image && product.image.startsWith('image')) {
-                imgSrc = product.image;
-            } else if (product.image && product.image.trim() !== '') {
-                imgSrc = product.image;
-            }
-            const card = document.createElement('div');
-            card.className = 'product-card cursor-pointer';
-            card.onclick = () => showProductDetails(product);
-            card.innerHTML = `
-                <div class="h-40 overflow-hidden">
-                    <img src="${imgSrc}" 
-                         class="product-image w-full h-full object-cover" 
-                         onerror="this.src='https://placehold.co/300x300?text=  لا+صورة'">
-                </div>
-                <div class="p-4">
-                    <h3 class="font-bold text-gray-800 mb-1 text-base">${product.name || 'بدون اسم'}</h3>
-                    <p class="text-gray-600 text-xs mb-2">${product.category || 'غير مصنف'}</p>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="font-bold text-blue-600 text-lg">${(product.price || 0).toFixed(2)}د.ع </span>
-                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">${product.inStock ? 'متوفر' : 'غير متوفر'}</span>
-                    </div>
-                    <button onclick='event.stopPropagation(); addToCart(${JSON.stringify({id: product.id, name: product.name || 'منتج', price: product.price || 0, image: imgSrc, specifications: product.specifications || {}}).replace(/'/g, "\\'")})' 
-                            class="w-full mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg hover:opacity-90 transition flex items-center justify-center">
-                        <i class="fas fa-shopping-cart ml-2"></i> إضافة إلى السلة
-                    </button>
-                </div>
-            `;
-            list.appendChild(card);
-        }
-        function renderCategoriesFilter() {
-            const filterDiv = document.getElementById('categories-filter');
-            filterDiv.innerHTML = '';
-            const uniqueCategories = [...categories].filter(cat => cat && cat.trim() !== '');
-            if (uniqueCategories.length === 0) return;
-            filterDiv.classList.remove('hidden');
-            const allBtn = document.createElement('div');
-            allBtn.className = 'category-badge active';
-            allBtn.textContent = 'الكل';
-            allBtn.onclick = () => {
-                document.querySelectorAll('.category-badge').forEach(btn => btn.classList.remove('active'));
-                allBtn.classList.add('active');
-                showAllProducts();
-            };
-            filterDiv.appendChild(allBtn);
-            uniqueCategories.forEach(category => {
-                const btn = document.createElement('div');
-                btn.className = 'category-badge';
-                btn.textContent = category;
-                btn.onclick = () => {
-                    document.querySelectorAll('.category-badge').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    filterProductsByCategory(category);
-                };
-                filterDiv.appendChild(btn);
-            });
-        }
-        // === تفاصيل المنتج ===
-        function showProductDetails(product) {
-            currentProduct = product;
-            const modal = document.getElementById('product-modal');
-            const content = document.getElementById('product-detail-content');
+<body>
+  <div class="container">
+    <h1>الموقع قيد الصيانة</h1>
+    <p>نقوم حاليًا بتحديثات مهمة لتحسين تجربتك. يرجى العودة لاحقًا!</p>
 
-            // عرض المواصفات الديناميكية من Firestore
-            let specsHtml = '';
-            if (product.specifications && typeof product.specifications === 'object') {
-                const specsEntries = Object.entries(product.specifications);
-                if (specsEntries.length > 0) {
-                    specsHtml = `
-                        <h3 class="font-bold text-gray-800 mb-2">المواصفات:</h3>
-                        <ul class="feature-list">
-                            ${specsEntries.map(([key, value]) => 
-                                `<li><i class="fas fa-check-circle"></i> ${key}: ${value}</li>`
-                            ).join('')}
-                        </ul>
-                    `;
-                }
-            }
+    <div class="help-links">
+      <a href="https://t.me/Wnwnw3" target="_blank">✉️ اتصل بالدعم الفني</a>
+      <a href="bd5055312@gmail.com" target="_blank">📘 مركز المساعدة</a>
+      <a href="07729807659">📞 اتصل بنا مباشرة</a>
+    </div>
 
-            if (!specsHtml) {
-                specsHtml = '<p class="text-gray-500 text-sm">لا توجد مواصفات متاحة لهذا المنتج.</p>';
-            }
-
-            content.innerHTML = `
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="md:w-1/2">
-                        <img id="main-product-image" src="${product.image || 'https://placehold.co/300x300?text=  منتج'}" 
-                             class="product-detail-image" 
-                             onerror="this.src='https://placehold.co/300x300?text=  لا+صورة'">
-                    </div>
-                    <div class="md:w-1/2">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-2">${product.name || 'بدون اسم'}</h2>
-                        <p class="text-gray-600 mb-2">${product.category || 'غير مصنف'}</p>
-                        <div class="text-3xl font-bold text-blue-600 mb-4">${(product.price || 0).toFixed(2)}د.ع</div>
-                        <div class="mb-6">
-                            ${specsHtml}
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <button onclick="addToCartFromModal()" 
-                                    class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg hover:opacity-90 transition flex items-center justify-center">
-                                <i class="fas fa-shopping-cart ml-2"></i> إضافة إلى السلة
-                            </button>
-                            <button onclick="closeProductModal()" 
-                                    class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition">
-                                إغلاق
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-        function addToCartFromModal() {
-            if (currentProduct) {
-                addToCart(currentProduct);
-            }
-        }
-        function closeProductModal() {
-            document.getElementById('product-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-        window.onclick = function(event) {
-            const modal = document.getElementById('product-modal');
-            if (event.target === modal) {
-                closeProductModal();
-            }
-        }
-        // === تحميل المنتجات ===
-        async function loadProducts() {
-            const list = document.getElementById('products-list');
-            const loading = document.getElementById('loading');
-            const noProducts = document.getElementById('no-products');
-            const filterDiv = document.getElementById('categories-filter');
-            loading.classList.remove('hidden');
-            list.innerHTML = '';
-            filterDiv.classList.add('hidden');
-            categories.clear();
-            allProducts = [];
-            try {
-                const snap = await db.collection('products').where('inStock', '==', true).get();
-                loading.classList.add('hidden');
-                if (snap.empty) {
-                    noProducts.classList.remove('hidden');
-                    return;
-                }
-                noProducts.classList.add('hidden');
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    p.id = doc.id;
-                    allProducts.push(p);
-                    if (p.category && p.category.trim() !== '') {
-                        categories.add(p.category);
-                    }
-                });
-                allProducts.forEach(product => {
-                    renderProductCard(product);
-                });
-                renderCategoriesFilter();
-            } catch (error) {
-                console.error('خطأ في تحميل المنتجات:', error);
-                loading.classList.add('hidden');
-                noProducts.classList.remove('hidden');
-                noProducts.innerHTML = '<i class="fas fa-exclamation-triangle text-4xl mb-4 text-gray-300"></i><p class="text-xl">خطأ في تحميل المنتجات. يرجى إعادة التحميل.</p>';
-            }
-        }
-        // === بدء التشغيل ===
-        window.onload = () => {
-            updateCartUI();
-            loadProducts();
-            updateNavActive('products');
-        };
-    </script>
+    <div class="footer">
+      <p>شكرًا لصبرك! ⏳</p>
+    </div>
+  </div>
 </body>
 </html>
